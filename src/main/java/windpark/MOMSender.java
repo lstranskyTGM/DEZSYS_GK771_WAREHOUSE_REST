@@ -15,7 +15,8 @@ public class MOMSender {
   private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
   private static String subject = "windengine_001";
 	
-  public MOMSender(WarehouseData wData) {
+  // public MOMSender(WarehouseData wData) {
+  public MOMSender(String wData) {
 		
 	  System.out.println( "Sender started." );
 
@@ -27,24 +28,44 @@ public class MOMSender {
 			
 	  try {
 	    	
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory( user, password, url );
-			connection = connectionFactory.createConnection();
-			connection.start();
-		
-			// Create the session
-			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			destination = session.createTopic( subject );
-				  
-			// Create the producer.
-			producer = session.createProducer(destination);
-			producer.setDeliveryMode( DeliveryMode.NON_PERSISTENT );
-			
-			// Create the message
-			ObjectMessage message = session.createObjectMessage((Serializable) wData);
-			producer.send(message);
-			System.out.println( message.getObject() );
+//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory( user, password, url );
+//			connection = connectionFactory.createConnection();
+//			connection.start();
+//
+//			// Create the session
+//			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//			destination = session.createTopic( subject );
+//
+//			// Create the producer.
+//			producer = session.createProducer(destination);
+//			producer.setDeliveryMode( DeliveryMode.NON_PERSISTENT );
+//
+//			// Create the message
+//			ObjectMessage message = session.createObjectMessage((Serializable) wData);
+//			producer.send(message);
+//			System.out.println( message.getObject() );
+//
+//			connection.stop();
 
-			connection.stop();
+		  ConnectionFactory connectionFactory = new ActiveMQConnectionFactory( user, password, url );
+		  connection = connectionFactory.createConnection();
+		  connection.start();
+
+		  // Create the session
+		  session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		  destination = session.createTopic( subject );
+
+		  // Create the producer.
+		  producer = session.createProducer(destination);
+		  producer.setDeliveryMode( DeliveryMode.NON_PERSISTENT );
+
+		  // Create the message
+		  TextMessage m = session.createTextMessage(wData);
+
+		  producer.send(m);
+		  System.out.println(m.getText());
+
+		  connection.stop();
 	      
 	  } catch (Exception e) {
 	  	

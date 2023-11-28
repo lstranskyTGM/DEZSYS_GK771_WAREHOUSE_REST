@@ -1,5 +1,7 @@
 package tradearea.warehouse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.MediaType;
 
 import tradearea.model.WarehouseData;
+
 import windpark.MOMSender;
 
 @RestController
@@ -25,8 +28,13 @@ public class WarehouseController {
     }
 
     @RequestMapping(value="/warehouse/{inID}/data", produces = MediaType.APPLICATION_JSON_VALUE)
-    public WarehouseData warehouseData( @PathVariable String inID ) {
-        return service.getWarehouseData( inID );
+    public WarehouseData warehouseData( @PathVariable String inID ) throws JsonProcessingException {
+        WarehouseData data = service.getWarehouseData( inID );
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json_string = objectMapper.writeValueAsString(data);
+        System.out.println( ""  + data);
+        new MOMSender( json_string);
+        return data;
     }
 
     @RequestMapping(value="/warehouse/{inID}/xml", produces = MediaType.APPLICATION_XML_VALUE)
@@ -34,9 +42,14 @@ public class WarehouseController {
         return service.getWarehouseData( inID );
     }
 
+//    @RequestMapping("/warehouse/{inID}/transfer")
+//    public String warehouseTransfer( @PathVariable String inID ) {
+//        new MOMSender(service.getWarehouseData(inID));
+//        return service.getGreetings("Warehouse.Transfer!");
+//    }
+
     @RequestMapping("/warehouse/{inID}/transfer")
     public String warehouseTransfer( @PathVariable String inID ) {
-        new MOMSender(service.getWarehouseData(inID));
         return service.getGreetings("Warehouse.Transfer!");
     }
 
