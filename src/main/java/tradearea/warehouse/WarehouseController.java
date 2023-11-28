@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.MediaType;
 
 import tradearea.model.WarehouseData;
+import windpark.MOMSender;
 
 @RestController
 public class WarehouseController {
@@ -35,6 +36,7 @@ public class WarehouseController {
 
     @RequestMapping("/warehouse/{inID}/transfer")
     public String warehouseTransfer( @PathVariable String inID ) {
+        new MOMSender(service.getWarehouseData(inID));
         return service.getGreetings("Warehouse.Transfer!");
     }
 
